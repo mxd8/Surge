@@ -7,6 +7,7 @@ Workspace for Surge (macOS network proxy) operations via `surge-cli`.
 - `surge-cli` is symlinked to `/Applications/Surge.app/Contents/Applications/surge-cli` and available in PATH (`~/.local/bin`).
 - The official Surge agent skill is symlinked at `~/.agents/skills/surge` (source: `/Applications/Surge.app/Contents/Resources/Skills/surge`) and updates with the app bundle.
 - CLI talks to the locally running Surge instance; prefer `--raw` for JSON output. Collect baseline with `surge-cli --raw environment` / `dump policy` / `dump profile` before any `set` mutation, then re-verify.
+- Remote phone (Surge iOS): use `surge-phone <command>` — a wrapper in `~/.local/bin` that applies `--remote key@ip:6170` from `~/.config/surge/remote.conf` (chmod 600, contains the API key; do not commit). Phone side requires `http-api = <key>@0.0.0.0:6170` in the profile `[General]` section and same-LAN reachability.
 - Git identity and GitHub CLI (`gh`, account `mxd8`) are configured on this machine; the remote uses SSH.
 
 ## Repo
