@@ -1,6 +1,6 @@
 #!name=Sex8 去广告
 #!desc=拦截 Sex8（Discuz 论坛）广告：站内广告接口 api.php?mod=ad（楼层横幅/弹窗卡片/APP 推广浮窗的投放源）+ 第三方推送域（热门标签接口会携带用户凭证请求随机域名、弹窗外链 tyughj.bar / bxkfw458.co）+ AdSense 与 GA/GTM 统计；重写页面删除广告弹窗容器（modal_index/modal_radio）、楼层广告、底部固定横幅、APP 推广浮窗、右下角悬浮视频广告窗、帖子内插入的广告行与返利推广挂件、会员订单通知弹窗，并给页面加 no-cache 防止旧缓存渲染出广告。附件/图片 CDN（x5ewt.com）与论坛功能不受影响。Mac 与 iOS 通用，需 MITM。
-#!version=1.0.3
+#!version=1.0.4
 #!author=mxd8
 #!date=2026-10-25
 
@@ -25,6 +25,11 @@
 #           （mnoas309.com 广告 feed）——域名拦不了同源 JS，重写里正则摘除 script 标签断种，
 #           运行时残留由新选择器清理；左侧 #location_list（categories.js 驱动的分类快捷条）
 #           是站点功能，保留。
+#           v1.0.4 补（用户实抓页面 HTML）：分组间横幅块 div.bm.b_sxc（595x80 GIF 创意图
+#           走内容 CDN x5ewt.com，类名后缀 b_sxp/b_sxc 轮换，用 [class*="b_sx"] 通配）；
+#           dasp.php 纯广告跳转器整条 URL-REGEX 拦（含裸 IP 落地 23.225.52.67 的出口）；
+#           滚动轮播清空后的 swiper 空壳（35px 占位条）用 :has 连壳删。
+#           script-path 加 ?v=1004 穿透 raw CDN 边缘缓存（改脚本必改 query，防拉到旧版）。
 # 不误伤补充：帖子正文内嵌 video.js 播放器（#my_video_1 在 .t_f 单元格）的 HLS 源
 #           media-server.baihu368.today / t7ggv.com 是用户发布的视频内容，绝不拦；
 #           twitter.com / t.me 官方社媒链接与姊妹站 s8youni.com 保留。
@@ -65,6 +70,12 @@ DOMAIN-SUFFIX,mnoas309.com,REJECT
 # 内联脚本注入的镜像/落地域
 DOMAIN-SUFFIX,langxiinsng.life,REJECT
 
+# —— 广告点击跳转器与 IP 落地域（v1.0.4，用户实抓分组横幅块）——
+# dasp.php 是纯广告跳转器（a=Sxx&u=落地URL），无正经用途，整条拦
+URL-REGEX,^https?:\/\/www\.sex8\.cc\/dasp\.php,REJECT
+# 分组横幅块里出现的裸 IP 落地页
+IP-CIDR,23.225.52.67/32,REJECT,no-resolve
+
 # —— AdSense 与统计 ——
 # pagead2.googlesyndication.com/adsbygoogle.js 实抓；doubleclick 为 GA 关联曝光域
 DOMAIN-SUFFIX,googlesyndication.com,REJECT
@@ -76,7 +87,7 @@ DOMAIN-SUFFIX,cloudflareinsights.com,REJECT
 
 [Script]
 # 页面重写：删除广告弹窗容器/楼层广告/底部横幅/APP 推广浮窗（创意图走内容 CDN，只能删 DOM）
-sex8-rewrite = type=http-response, pattern=^https?:\/\/[^\/]*sex8\.cc\/, requires-body=1, script-path=https://raw.githubusercontent.com/mxd8/Surge/main/modules/sex8-adblock/js/sex8-rewrite.js, timeout=10
+sex8-rewrite = type=http-response, pattern=^https?:\/\/[^\/]*sex8\.cc\/, requires-body=1, script-path=https://raw.githubusercontent.com/mxd8/Surge/main/modules/sex8-adblock/js/sex8-rewrite.js?v=1004, timeout=10
 
 [MITM]
 # 模块 [MITM] hostname 覆盖其他模块的列表：保留 avjoy/xvideos 去广告模块与内置 router-com 模块所需域名

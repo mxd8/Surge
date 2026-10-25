@@ -30,14 +30,19 @@ const AD_SELECTOR =
   '#myModal_index,#myModal_radio,#ad_first,#ad_second,.xb_app_box,' +
   '[id^="xb_ad_source"],.floor-ad,#fixed-bottom-modal,' +
   'a#mn_plink_radiobar,ins.adsbygoogle,.adsbygoogle,' +
-  '.V-video-float,tr.ad,.b_sxp,#v_e6_action,' +
+  '.V-video-float,tr.ad,[class*="b_sx"],#v_e6_action,' +
   '.pct iframe[src*="plugin-e6-rebate"],' +
   '#member-order-notice-modal,#member-order-notice-loading,' +
   // v1.0.2：全站推广链接块（class 带混淆随机串 fnwehjnc12 会轮换，用结构与内容类删）
   'div.full:has(> .div-list),.div-list,[class*="fnwehjnc"],' +
   // v1.0.3：侧条里的单个广告按钮、滚动推广轮播与 gohome_* 推广链接（运行时由
   // peerclick.js/recommends.js 等同源脚本生成，脚本在下方源头摘除，这里清残留）
-  '#qd-jdcf,[class*="gohome"],[class*="scroll-panel"],[class*="scroll-pitem"]';
+  '#qd-jdcf,[class*="gohome"],[class*="scroll-panel"],[class*="scroll-pitem"],' +
+  // v1.0.4：滚动推广轮播的 swiper 空壳（UL 清掉后 35px 横条仍占位，连壳删）；
+  //   分组间横幅块 div.bm.b_sxc 走 [class*="b_sx"] 通配（后缀 b_sxp/b_sxc 会轮换）
+  '.swiper-slide:has(> .scroll-container-panel),' +
+  '.swiper-wrapper:has(.scroll-container-panel),' +
+  '.swiper-container:has(.scroll-container-panel)';
 
 // 源头摘除同源广告生成器脚本（域名拦截对同源 JS 无效）：
 //   static/js/peerclick.js——广告点击网络 gopeerclick.com 的客户端
