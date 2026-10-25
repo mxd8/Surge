@@ -1,6 +1,6 @@
 #!name=Sex8 去广告
 #!desc=拦截 Sex8（Discuz 论坛）广告：站内广告接口 api.php?mod=ad（楼层横幅/弹窗卡片/APP 推广浮窗的投放源）+ 第三方推送域（热门标签接口会携带用户凭证请求随机域名、弹窗外链 tyughj.bar / bxkfw458.co）+ AdSense 与 GA/GTM 统计；重写页面删除广告弹窗容器（modal_index/modal_radio）、楼层广告、底部固定横幅、APP 推广浮窗、右下角悬浮视频广告窗、帖子内插入的广告行与返利推广挂件、会员订单通知弹窗，并给页面加 no-cache 防止旧缓存渲染出广告。附件/图片 CDN（x5ewt.com）与论坛功能不受影响。Mac 与 iOS 通用，需 MITM。
-#!version=1.0.5
+#!version=1.0.6
 #!author=mxd8
 #!date=2026-10-25
 
@@ -76,6 +76,9 @@ URL-REGEX,^https?:\/\/www\.sex8\.cc\/dasp\.php,REJECT
 # 分组横幅块里出现的裸 IP 落地页
 IP-CIDR,23.225.52.67/32,REJECT,no-resolve
 
+# —— 广告创意 CDN（v1.0.6 实抓：版头横幅表全部用它，抽验 4 帖正文 0 命中，非共享 CDN）——
+DOMAIN-SUFFIX,q4rtz.com,REJECT
+
 # —— AdSense 与统计 ——
 # pagead2.googlesyndication.com/adsbygoogle.js 实抓；doubleclick 为 GA 关联曝光域
 DOMAIN-SUFFIX,googlesyndication.com,REJECT
@@ -87,7 +90,7 @@ DOMAIN-SUFFIX,cloudflareinsights.com,REJECT
 
 [Script]
 # 页面重写：删除广告弹窗容器/楼层广告/底部横幅/APP 推广浮窗（创意图走内容 CDN，只能删 DOM）
-sex8-rewrite = type=http-response, pattern=^https?:\/\/[^\/]*sex8\.cc\/, requires-body=1, script-path=https://raw.githubusercontent.com/mxd8/Surge/main/modules/sex8-adblock/js/sex8-rewrite.js?v=1005, timeout=10
+sex8-rewrite = type=http-response, pattern=^https?:\/\/[^\/]*sex8\.cc\/, requires-body=1, script-path=https://raw.githubusercontent.com/mxd8/Surge/main/modules/sex8-adblock/js/sex8-rewrite.js?v=1006, timeout=10
 
 [MITM]
 # 模块 [MITM] hostname 覆盖其他模块的列表：保留 avjoy/xvideos 去广告模块与内置 router-com 模块所需域名

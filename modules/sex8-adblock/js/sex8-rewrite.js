@@ -45,7 +45,13 @@ const AD_SELECTOR =
   '.swiper-container:has(.scroll-container-panel),' +
   // v1.0.5：文字广告位（SW01-SW08 槽，无类名裸文本链直指落地域）——
   //   dasp.php 是广告专用跳转器，按 href 属性删链接并整行删除
-  'a[href*="dasp.php"],tr:has(a[href*="dasp.php"])';
+  'a[href*="dasp.php"],tr:has(a[href*="dasp.php"]),' +
+  // v1.0.6：版头横幅表（BBCode t_table 伪装，创意图在 q4rtz.com 纯广告域——
+  //   已抽验 4 帖正文 0 命中，正文图全走 x5ewt）+ 全页落地域文字链（公告表里混的抽签/球赛推广）
+  'table.t_table:has(img[src*="q4rtz"]),' +
+  'a[href*="bxkfw458"],a[href*="glksr3"],a[href*="rkaflet"],a[href*="szefdrh"],' +
+  'a[href*="heiliao37"],a[href*="duoduomxm"],a[href*="quibids2"],a[href*="yuelao26"],' +
+  'a[href*="weiixedbi"],a[href*="kongsjieie"],a[href*="tyughj"],a[href*="langxiinsng"]';
 
 // 源头摘除同源广告生成器脚本（域名拦截对同源 JS 无效）：
 //   static/js/peerclick.js——广告点击网络 gopeerclick.com 的客户端
