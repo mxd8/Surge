@@ -39,6 +39,18 @@ https://raw.githubusercontent.com/mxd8/Surge/main/modules/avjoy-adblock/js/avjoy
 3. 广告域名必须先用 `surge-cli` Replica 抓包 + `add-temp-rule` 实测验证，确认不误伤正片/功能域再入库（详见 AGENTS.md）
 4. 提交推送后，Mac 端覆盖本地模块缓存 + reload；iOS 端 GUI 重新安装或更新模块
 
+## surge-cli 常用命令
+
+命令加 `--raw` 得 JSON（脚本处理用）；加 `--remote <密钥>@<IP>:6170` 操作远程 Surge（如 iPhone）。`surge-cli -h` 只列子集，全量目录见官方 Surge skill 的 `references/command-reference.md`。
+
+- **查看**：`environment`（运行态）｜`dump profile original|effective`（effective = 模块合并后的结果，验证模块注入看它）｜`dump rule`（生效规则）｜`dump policy`｜`dump request`（近期请求，抓包分析入口）｜`dump active`（活跃连接）｜`dump event`｜`dump dns`｜`watch request`（实时跟踪新请求）
+- **修改**：`reload`（重载主 profile，模块内容更新后执行）｜`switch-profile <名称>`｜`set <key> <value>`（运行时值，重启复位）
+- **临时规则**（广告域实测专用，重启自动清空）：`add-temp-rule "DOMAIN-SUFFIX,<域>,REJECT"`｜`del-temp-rule <规则>`｜`flush-temp-rule`
+- **连接**：`kill <连接ID>`（改 MITM/脚本后配合硬刷新解决连接复用不生效）｜`flush dns`｜`diagnostics`
+- **外部资源**（模块引用的脚本/RULE-SET 等 URL 资源）：`external-resource list`（带 key）｜`external-resource update <key>`（**免重启热更新**；新模块脚本首拉 404 被缓存导致重写不命中，用这条重拉修复）
+- **测试**：`test-network`｜`test-policy <名称>`｜`test-all-policies`｜`test-group <名称>`｜`set-log-level <级别>`（临时改日志级别，不写入 profile）
+- **模块安装的边界**：CLI **没有**模块安装/管理命令——新模块只能 GUI 安装，或 Mac 离线三件套（写缓存文件 + 两个 plist + 重启 Surge，详见 AGENTS.md）；已装模块的内容更新才可免重启（cp 覆盖缓存 + `reload`，脚本还可用 `external-resource update` 热更）。
+
 ## rule/ 自定义清单
 
 `rule/custom.list` 放你自己收集的广告域名（RULE-SET 格式），在 profile 或模块 `[Rule]` 里引用即可全设备生效：

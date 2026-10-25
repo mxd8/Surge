@@ -1,6 +1,6 @@
 #!name=XVideos 去广告
 #!desc=拦截 XVideos 广告：ExoClick 服务域（pemsrv 实抓，magsrv/exoclick 兜底轮换）+ 站内赞助外链（Live Cams/Dating/Games 菜单跳转器）；重写页面清空广告位注入配置（底部横幅、原生网格广告）并删除直播挂件区块。不拦正片 CDN（*.xvideos-cdn.com）与直播站主域（chaturbate.com 等，仅删页面挂件 DOM）。Mac 与 iOS 通用，需 MITM。
-#!version=1.0.1
+#!version=1.0.2
 #!author=mxd8
 #!date=2026-10-25
 
@@ -14,9 +14,13 @@
 # —— 广告服务域（ExoClick 家族）——
 # s.pemsrv.com / a.pemsrv.com：XVideos 实抓的广告服务与曝光域
 DOMAIN-SUFFIX,pemsrv.com,REJECT
-# magsrv.com / exoclick.com：ExoClick 主域，覆盖 pemsrv 轮换（avjoy 模块已含，此处保模块自洽）
+# magsrv.com / exoclick.com：ExoClick 主域，覆盖 pemsrv 轮换
 DOMAIN-SUFFIX,magsrv.com,REJECT
 DOMAIN-SUFFIX,exoclick.com,REJECT
+
+# —— 广告素材 CDN ——
+# z6v2p9a8.bkcdn.net：随 pemsrv 链路出现的随机子域素材域（子域会轮换，按主域拦）
+DOMAIN-SUFFIX,bkcdn.net,REJECT
 
 # —— 站内赞助外链 ——
 # s.zline0.com：头部 Live Cams / Dating / AI Girlfriend / Games 菜单的跳转器（v1/d.php?z=...）
