@@ -1,0 +1,43 @@
+#!name=Sex8 去广告
+#!desc=拦截 Sex8（Discuz 论坛）广告：站内广告接口 api.php?mod=ad（楼层横幅/弹窗卡片/APP 推广浮窗的投放源）+ 第三方推送域（热门标签接口会携带用户凭证请求随机域名、弹窗外链 tyughj.bar / bxkfw458.co）+ AdSense 与 GA/GTM 统计；重写页面删除广告弹窗容器（modal_index/modal_radio）、楼层广告、底部固定横幅与 APP 推广浮窗。附件/图片 CDN（x5ewt.com）与论坛功能不受影响。Mac 与 iOS 通用，需 MITM。
+#!version=1.0.0
+#!author=mxd8
+#!date=2026-10-25
+
+# 域名来源：surge-cli Replica 抓包（浏览器实访 forum.html）+ 渲染后 DOM 结构分析（2026-10-25）
+# curl 直抓被站点 UA/TLS 指纹闸门拦（返回"请升级浏览器"壳页），证据全部来自浏览器实访
+# 广告形态：全站第一方投放——api.php?mod=ad&adid=custom_* 脚本回填 xb_ad_source_* 卡片与
+#           固定底部横幅；modal_index/modal_radio 弹窗外链指向随机域名（tyughj.bar 等，会轮换）；
+#           楼层广告 .floor-ad 创意图直接走内容 CDN images.x5ewt.com（同域混用，只能删 DOM）
+# 不误伤：images/photos.x5ewt.com 是附件与头像 CDN（46+ 请求实测），绝不能加 DOMAIN-SUFFIX；
+#           .p_pop/.h_pop 是 Discuz 弹出菜单不是广告；签到弹窗 #sign-ad 保留（站点功能）
+
+[Rule]
+# —— 站内广告投放接口 ——
+# 只拦 mod=ad 的响应（回填广告卡片的 JS），其他 api.php 调用（mod=js 等）不受影响
+URL-REGEX,^https?:\/\/www\.sex8\.cc\/api\.php\?mod=ad,REJECT
+
+# —— 第三方推送 / 弹窗外链域 ——
+# kongsjieie.bar：热门标签推送接口（v2/tag/hot，随机域名且带用户 Authorization 头请求，拦掉仅损失热搜词推荐）
+DOMAIN-SUFFIX,kongsjieie.bar,REJECT
+# tyughj.bar：ad_first 弹窗外链目标（随机域名，随投放轮换）
+DOMAIN-SUFFIX,tyughj.bar,REJECT
+# bxkfw458.co：xb_ad_source_3 卡片外链目标（随机域名，随投放轮换）
+DOMAIN-SUFFIX,bxkfw458.co,REJECT
+
+# —— AdSense 与统计 ——
+# pagead2.googlesyndication.com/adsbygoogle.js 实抓；doubleclick 为 GA 关联曝光域
+DOMAIN-SUFFIX,googlesyndication.com,REJECT
+DOMAIN-SUFFIX,doubleclick.net,REJECT
+DOMAIN-SUFFIX,googletagmanager.com,REJECT
+DOMAIN-SUFFIX,google-analytics.com,REJECT
+# Cloudflare Web Analytics（站点埋点）
+DOMAIN-SUFFIX,cloudflareinsights.com,REJECT
+
+[Script]
+# 页面重写：删除广告弹窗容器/楼层广告/底部横幅/APP 推广浮窗（创意图走内容 CDN，只能删 DOM）
+sex8-rewrite = type=http-response, pattern=^https?:\/\/[^\/]*sex8\.cc\/, requires-body=1, script-path=https://raw.githubusercontent.com/mxd8/Surge/main/modules/sex8-adblock/js/sex8-rewrite.js, timeout=10
+
+[MITM]
+# 模块 [MITM] hostname 覆盖其他模块的列表：保留 avjoy/xvideos 去广告模块与内置 router-com 模块所需域名
+hostname = avjoy.me, *.avjoy.me, router.com, www.router.com, xvideos.com, *.xvideos.com, sex8.cc, *.sex8.cc
