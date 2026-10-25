@@ -1,6 +1,6 @@
 #!name=XVideos 去广告
 #!desc=拦截 XVideos 广告：ExoClick 服务域（pemsrv 实抓，magsrv/exoclick 兜底轮换）+ 站内赞助外链（Live Cams/Dating/Games 菜单跳转器）；重写页面清空广告位注入配置（底部横幅、原生网格广告）并删除直播挂件区块。不拦正片 CDN（*.xvideos-cdn.com）与直播站主域（chaturbate.com 等，仅删页面挂件 DOM）。Mac 与 iOS 通用，需 MITM。
-#!version=1.0.0
+#!version=1.0.1
 #!author=mxd8
 #!date=2026-10-25
 
