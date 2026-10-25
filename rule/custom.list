@@ -1,0 +1,6 @@
+# 自定义广告域名清单（搭配 REJECT 使用，引用方式见同目录 README.md）
+# 格式：DOMAIN-SUFFIX,域名 / DOMAIN,精确域名 / DOMAIN-KEYWORD,关键词
+
+# 示例（取消注释即生效）：
+# DOMAIN-SUFFIX,example-ads.com
+# DOMAIN,ads.example-cdn.net
