@@ -25,7 +25,7 @@ raw 地址格式：`https://raw.githubusercontent.com/mxd8/Surge/main/<路径>`
 |---|---|---|
 | AVJoy 去广告 | `https://raw.githubusercontent.com/mxd8/Surge/main/modules/avjoy-adblock/avjoy-adblock.sgmodule` | 拦截 avjoy.me 贴片/横幅/弹窗广告与追踪；域名 REJECT + JS 页面重写（清广告位、关 VAST 插件），需 MITM，Mac 与 iOS 通用 |
 | XVideos 去广告 | `https://raw.githubusercontent.com/mxd8/Surge/main/modules/xvideos-adblock/xvideos-adblock.sgmodule` | 拦截 xvideos.com 广告（ExoClick 服务域、站内赞助外链）；域名 REJECT + JS 页面重写（清广告位注入配置、删底部横幅与直播挂件区块），不拦正片 CDN 与直播站主域，需 MITM，Mac 与 iOS 通用 |
-| Sex8 去广告 | `https://raw.githubusercontent.com/mxd8/Surge/main/modules/sex8-adblock/sex8-adblock.sgmodule` | 拦截 sex8.cc 广告（站内投放接口 api.php?mod=ad、第三方弹窗/推送域、AdSense 与统计、同源生成器 peerclick.js/recommends.js 源头摘除）；URL/域名 REJECT + JS 页面重写（删广告弹窗容器、楼层广告、底部横幅、APP 推广浮窗、右下角悬浮视频窗、帖内广告行、返利挂件、会员订单通知弹窗、推广链接块、导航落地链接过滤、侧条广告按钮、滚动推广轮播，页面加 no-cache 防旧缓存渲染广告），不拦附件/图片 CDN（x5ewt.com）、正文视频（media-server.*）与论坛功能，需 MITM，Mac 与 iOS 通用 |
+| Sex8 去广告 | `https://raw.githubusercontent.com/mxd8/Surge/main/modules/sex8-adblock/sex8-adblock.sgmodule` | 拦截 sex8.cc 广告（站内投放接口 api.php?mod=ad、广告跳转器 dasp.php、第三方弹窗/推送/落地域、裸 IP 落地、AdSense 与统计、同源生成器 peerclick.js/recommends.js 源头摘除）；URL/域名/IP REJECT + JS 页面重写（删广告弹窗容器、楼层广告、底部横幅、APP 推广浮窗、右下角悬浮视频窗、帖内广告行、返利挂件、会员订单通知弹窗、推广链接块、导航落地链接过滤、侧条广告按钮、滚动推广轮播、分组横幅块 b_sx*、文字广告位，页面加 no-cache 防旧缓存渲染广告），不拦附件/图片 CDN（x5ewt.com）、正文视频（media-server.*）与论坛功能，需 MITM，Mac 与 iOS 通用 |
 
 模块配套 JS 一律放在各自文件夹的 `js/` 下，模块内通过 raw 地址引用，例如：
 
