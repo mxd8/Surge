@@ -21,12 +21,18 @@ if (body.indexOf('surge-sex8-adblock') !== -1) {
 
 // 广告容器选择器（CSS 隐藏与 DOM 删除共用）：
 //   modal_index/modal_radio 两套广告弹窗（内含 ad_first 弹窗外链、ad_second APP/VIP
-//   推广浮窗、xb_ad_source_* 广告卡片）、楼层广告、固定底部横幅、导航 radiobar 广告位、AdSense 位
-//   注意：.p_pop/.h_pop 是 Discuz 弹出菜单、#sign-ad 是签到弹窗，都不是广告，不碰
+//   推广浮窗、xb_ad_source_* 广告卡片）、楼层广告、固定底部横幅、导航 radiobar 广告位、
+//   AdSense 位、右下角悬浮视频广告窗、帖子表格插入的广告行（b_sxp 创意图走内容 CDN）、
+//   帖子内容区注入的返利推广挂件、会员订单通知弹窗
+//   注意：.p_pop/.h_pop 是 Discuz 弹出菜单、#sign-ad 是签到弹窗、.qd-top/#location_list
+//   是签到/地区工具条，都不是广告，不碰；帖子正文在 table.plhin，tr.ad 实测不含正文
 const AD_SELECTOR =
   '#myModal_index,#myModal_radio,#ad_first,#ad_second,.xb_app_box,' +
   '[id^="xb_ad_source"],.floor-ad,#fixed-bottom-modal,' +
-  'a#mn_plink_radiobar,ins.adsbygoogle,.adsbygoogle';
+  'a#mn_plink_radiobar,ins.adsbygoogle,.adsbygoogle,' +
+  '.V-video-float,tr.ad,.b_sxp,#v_e6_action,' +
+  '.pct iframe[src*="plugin-e6-rebate"],' +
+  '#member-order-notice-modal,#member-order-notice-loading';
 
 const css = '<style id="surge-sex8-adblock-css">' +
   AD_SELECTOR + '{display:none !important;}' +
@@ -64,4 +70,14 @@ if (!injected) {
   body = payload + body;
 }
 
-$done({ body });
+// 响应头回传：强制 HTML 不被浏览器缓存——否则 MITM 关闭期间缓存的旧页面
+// 会在 MITM 恢复后继续渲染出广告容器（无响应体可改写，重写无从生效）
+const headers = {};
+const rh = $response.headers || {};
+for (const k in rh) {
+  if (/^(cache-control|content-length|content-encoding|transfer-encoding)$/i.test(k)) continue;
+  headers[k] = rh[k];
+}
+headers['cache-control'] = 'no-cache';
+
+$done({ body, headers });

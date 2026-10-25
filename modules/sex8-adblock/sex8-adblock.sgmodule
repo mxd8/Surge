@@ -1,6 +1,6 @@
 #!name=Sex8 去广告
-#!desc=拦截 Sex8（Discuz 论坛）广告：站内广告接口 api.php?mod=ad（楼层横幅/弹窗卡片/APP 推广浮窗的投放源）+ 第三方推送域（热门标签接口会携带用户凭证请求随机域名、弹窗外链 tyughj.bar / bxkfw458.co）+ AdSense 与 GA/GTM 统计；重写页面删除广告弹窗容器（modal_index/modal_radio）、楼层广告、底部固定横幅与 APP 推广浮窗。附件/图片 CDN（x5ewt.com）与论坛功能不受影响。Mac 与 iOS 通用，需 MITM。
-#!version=1.0.0
+#!desc=拦截 Sex8（Discuz 论坛）广告：站内广告接口 api.php?mod=ad（楼层横幅/弹窗卡片/APP 推广浮窗的投放源）+ 第三方推送域（热门标签接口会携带用户凭证请求随机域名、弹窗外链 tyughj.bar / bxkfw458.co）+ AdSense 与 GA/GTM 统计；重写页面删除广告弹窗容器（modal_index/modal_radio）、楼层广告、底部固定横幅、APP 推广浮窗、右下角悬浮视频广告窗、帖子内插入的广告行与返利推广挂件、会员订单通知弹窗，并给页面加 no-cache 防止旧缓存渲染出广告。附件/图片 CDN（x5ewt.com）与论坛功能不受影响。Mac 与 iOS 通用，需 MITM。
+#!version=1.0.1
 #!author=mxd8
 #!date=2026-10-25
 
@@ -8,7 +8,12 @@
 # curl 直抓被站点 UA/TLS 指纹闸门拦（返回"请升级浏览器"壳页），证据全部来自浏览器实访
 # 广告形态：全站第一方投放——api.php?mod=ad&adid=custom_* 脚本回填 xb_ad_source_* 卡片与
 #           固定底部横幅；modal_index/modal_radio 弹窗外链指向随机域名（tyughj.bar 等，会轮换）；
-#           楼层广告 .floor-ad 创意图直接走内容 CDN images.x5ewt.com（同域混用，只能删 DOM）
+#           楼层广告 .floor-ad 创意图直接走内容 CDN images.x5ewt.com（同域混用，只能删 DOM）。
+#           v1.0.1 补（帖子页实抓）：右下角悬浮视频窗 .V-video-float（自动播放站内视频）、
+#           帖子表格插入的广告行 tr.ad/.b_sxp（创意图同样走内容 CDN）、帖子内容区注入的
+#           返利挂件 plugin-e6-rebate iframe/#v_e6_action、会员订单通知弹窗 member-order-notice；
+#           重写同时给 HTML 响应加 Cache-Control: no-cache——MITM 关闭期间浏览器缓存的旧页面
+#           会在恢复后继续渲染广告（无响应体可改写），加头后每次导航都拿到改写后的页面
 # 不误伤：images/photos.x5ewt.com 是附件与头像 CDN（46+ 请求实测），绝不能加 DOMAIN-SUFFIX；
 #           .p_pop/.h_pop 是 Discuz 弹出菜单不是广告；签到弹窗 #sign-ad 保留（站点功能）
 
