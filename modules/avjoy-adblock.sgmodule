@@ -1,6 +1,6 @@
 #!name=AVJoy 去广告
-#!desc=拦截 avjoy.me 视频页广告：贴片广告（VAST 标签/广告视频文件）、页面横幅与侧栏广告（ExoClick / JuicyAds / Tsyndicate）、smartpop 直播推广小窗、弹窗广告源及广告追踪像素。纯域名级规则，无需 MITM，Mac 与 iOS 通用。不拦截视频正片 CDN（media-cdn*.avjoy.me / sabtpledge.com），不影响播放与下载。
-#!version=1.0.0
+#!desc=拦截 avjoy.me 视频页广告：贴片广告（VAST 标签/广告视频文件）、页面横幅与侧栏广告（ExoClick / JuicyAds / Tsyndicate）、smartpop 直播推广小窗、弹窗广告源及广告追踪像素。域名级 REJECT 断广告网络 + JS 重写页面清除广告位并直接关闭 VAST 插件，Mac 与 iOS 通用，无空盒子残留。不拦截视频正片 CDN（media-cdn*.avjoy.me / sabtpledge.com），不影响播放与下载。
+#!version=1.1.0
 #!author=mxd8
 #!date=2026-10-25
 
@@ -48,3 +48,11 @@ DOMAIN,sc7.com,REJECT
 # —— 统计（广告投放常用载体，可选）——
 DOMAIN-SUFFIX,googletagmanager.com,REJECT
 DOMAIN-SUFFIX,google-analytics.com,REJECT
+
+[Script]
+# 页面重写：清除广告位 DOM、关闭 VAST 插件（手机版/桌面版模板通用）
+avjoy-rewrite = type=http-response, pattern=^https?:\/\/(?:www\.)?avjoy\.me\/, requires-body=1, script-path=https://raw.githubusercontent.com/mxd8/Surge/main/scripts/avjoy-rewrite.js, timeout=10
+
+[MITM]
+# 仅 MITM avjoy 站点本身；显式排除 z.ai（AI 服务流量绝不解密）
+hostname = avjoy.me, *.avjoy.me, -*.z.ai, -z.ai
