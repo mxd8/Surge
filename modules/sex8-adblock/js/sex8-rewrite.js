@@ -42,7 +42,10 @@ const AD_SELECTOR =
   //   分组间横幅块 div.bm.b_sxc 走 [class*="b_sx"] 通配（后缀 b_sxp/b_sxc 会轮换）
   '.swiper-slide:has(> .scroll-container-panel),' +
   '.swiper-wrapper:has(.scroll-container-panel),' +
-  '.swiper-container:has(.scroll-container-panel)';
+  '.swiper-container:has(.scroll-container-panel),' +
+  // v1.0.5：文字广告位（SW01-SW08 槽，无类名裸文本链直指落地域）——
+  //   dasp.php 是广告专用跳转器，按 href 属性删链接并整行删除
+  'a[href*="dasp.php"],tr:has(a[href*="dasp.php"])';
 
 // 源头摘除同源广告生成器脚本（域名拦截对同源 JS 无效）：
 //   static/js/peerclick.js——广告点击网络 gopeerclick.com 的客户端
