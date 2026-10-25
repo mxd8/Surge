@@ -1,6 +1,6 @@
 #!name=Sex8 去广告
 #!desc=拦截 Sex8（Discuz 论坛）广告：站内广告接口 api.php?mod=ad（楼层横幅/弹窗卡片/APP 推广浮窗的投放源）+ 第三方推送域（热门标签接口会携带用户凭证请求随机域名、弹窗外链 tyughj.bar / bxkfw458.co）+ AdSense 与 GA/GTM 统计；重写页面删除广告弹窗容器（modal_index/modal_radio）、楼层广告、底部固定横幅、APP 推广浮窗、右下角悬浮视频广告窗、帖子内插入的广告行与返利推广挂件、会员订单通知弹窗，并给页面加 no-cache 防止旧缓存渲染出广告。附件/图片 CDN（x5ewt.com）与论坛功能不受影响。Mac 与 iOS 通用，需 MITM。
-#!version=1.0.2
+#!version=1.0.3
 #!author=mxd8
 #!date=2026-10-25
 
@@ -17,6 +17,14 @@
 #           v1.0.2 补（多页实抓）：全站推广链接块 .full > .div-list（class 混淆随机串 fnwehjnc12
 #           会轮换，用结构 :has 与内容类删）、Discuz 导航 #nv 里的推广 li（随机 id mn_N9660，
 #           重写内按落地域 TLD/家族名过滤而非枚举 id）。
+#           v1.0.3 补（可疑 JS 分析：MutationObserver 从 document_start 记录注入 + 脚本清单，
+#           站点按请求轮换干净/带广告变体，循环多刷命中脏变体取证）：两侧悬浮条里的推广按钮
+#           #qd-jdcf（右侧 qd-top 功能条保留只删广告按钮）、分组间滚动推广轮播（swiper 内
+#           scroll-panel/pitem，gohome_* 类链接全指向落地域）；生成器是同源脚本
+#           static/js/peerclick.js（gopeerclick.com 点击网络）与根目录 recommends.js
+#           （mnoas309.com 广告 feed）——域名拦不了同源 JS，重写里正则摘除 script 标签断种，
+#           运行时残留由新选择器清理；左侧 #location_list（categories.js 驱动的分类快捷条）
+#           是站点功能，保留。
 # 不误伤补充：帖子正文内嵌 video.js 播放器（#my_video_1 在 .t_f 单元格）的 HLS 源
 #           media-server.baihu368.today / t7ggv.com 是用户发布的视频内容，绝不拦；
 #           twitter.com / t.me 官方社媒链接与姊妹站 s8youni.com 保留。
@@ -49,6 +57,13 @@ DOMAIN-SUFFIX,quibids2.xyz,REJECT
 DOMAIN-SUFFIX,weiixedbi.life,REJECT
 DOMAIN-SUFFIX,heisiyujie527.online,REJECT
 DOMAIN-SUFFIX,xn--03-rm6cv95j.com,REJECT
+
+# —— 同源广告生成器的服务端（v1.0.3 脚本分析发现；脚本本体在重写里源头摘除）——
+# peerclick.js 回传的广告点击网络；recommends.js 拉取的广告 feed
+DOMAIN-SUFFIX,gopeerclick.com,REJECT
+DOMAIN-SUFFIX,mnoas309.com,REJECT
+# 内联脚本注入的镜像/落地域
+DOMAIN-SUFFIX,langxiinsng.life,REJECT
 
 # —— AdSense 与统计 ——
 # pagead2.googlesyndication.com/adsbygoogle.js 实抓；doubleclick 为 GA 关联曝光域

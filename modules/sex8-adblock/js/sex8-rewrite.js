@@ -19,6 +19,9 @@ if (body.indexOf('surge-sex8-adblock') !== -1) {
   $done({});
 }
 
+// 源头摘除同源广告生成器（静态 HTML 里的 script 标签，解析前删掉即断种）
+body = body.replace(STRIP_SCRIPTS, '');
+
 // 广告容器选择器（CSS 隐藏与 DOM 删除共用）：
 //   modal_index/modal_radio 两套广告弹窗（内含 ad_first 弹窗外链、ad_second APP/VIP
 //   推广浮窗、xb_ad_source_* 广告卡片）、楼层广告、固定底部横幅、导航 radiobar 广告位、
@@ -34,7 +37,16 @@ const AD_SELECTOR =
   '.pct iframe[src*="plugin-e6-rebate"],' +
   '#member-order-notice-modal,#member-order-notice-loading,' +
   // v1.0.2：全站推广链接块（class 带混淆随机串 fnwehjnc12 会轮换，用结构与内容类删）
-  'div.full:has(> .div-list),.div-list,[class*="fnwehjnc"]';
+  'div.full:has(> .div-list),.div-list,[class*="fnwehjnc"],' +
+  // v1.0.3：侧条里的单个广告按钮、滚动推广轮播与 gohome_* 推广链接（运行时由
+  // peerclick.js/recommends.js 等同源脚本生成，脚本在下方源头摘除，这里清残留）
+  '#qd-jdcf,[class*="gohome"],[class*="scroll-panel"],[class*="scroll-pitem"]';
+
+// 源头摘除同源广告生成器脚本（域名拦截对同源 JS 无效）：
+//   static/js/peerclick.js——广告点击网络 gopeerclick.com 的客户端
+//   recommends.js——广告 feed（pc-web.mnoas309.com）驱动的推广位生成器
+//   保留 categories.js（637KB 分类数据，左侧 location_list 快捷条依赖）与 redirect.js（功能不明，保守不动）
+const STRIP_SCRIPTS = /<script[^>]*src="[^"]*(?:peerclick|recommends)\.js[^"]*"[^>]*>\s*<\/script>/gi;
 
 const css = '<style id="surge-sex8-adblock-css">' +
   AD_SELECTOR + '{display:none !important;}' +
