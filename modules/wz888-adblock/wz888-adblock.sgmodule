@@ -1,0 +1,51 @@
+#!name=WZ888 去广告
+#!desc=WZ888(wz888.net) 去广告 v1.0.0：删 APP 推广块(app-abk)/混淆类横幅(gg_*)/推广图组(spreadimage)/底部悬浮(bottom_float)/导航 APP 按钮/页脚友链推广；拦 APP 落地域、纯广告创意 CDN、裸 IP 落地与 cnzz 统计；清空同源 common.js 广告引擎配置(topGG/btmGG/couplet/rollingad)。不拦内容封面图床(pic.892539.xyz 等轮换域)与共享图床(go2yd/alicdn/mifile/z4a)，不碰"最新网址"公告(dadiao.cc)与商务合作。双端通用。
+#!version=1.0.0
+
+[Rule]
+# APP 推广落地域（app-abk-item / 导航按钮 / bottom_float / spread 落地，随机名家族按根域拦）
+DOMAIN-SUFFIX,hscka.cc,REJECT
+DOMAIN-SUFFIX,ddysx.cc,REJECT
+DOMAIN-SUFFIX,3879394.cc,REJECT
+DOMAIN-SUFFIX,wmsxwd-3.men,REJECT
+DOMAIN-SUFFIX,qyhitzk.com,REJECT
+DOMAIN-SUFFIX,zloazdb.com,REJECT
+# 共享托管上的推广页只拦全主机名（netlify/azure 不能按根域拦）
+DOMAIN,dwg351aa.southafricanorth.cloudapp.azure.com,REJECT
+DOMAIN,shangwu.netlify.app,REJECT
+DOMAIN-SUFFIX,lfyc.cc,REJECT
+# common.js 广告引擎配置里的落地域（对联/顶部/底部悬浮，当前未激活仍兜底）
+DOMAIN-SUFFIX,s27ns.com,REJECT
+DOMAIN-SUFFIX,yhc339.com,REJECT
+DOMAIN-SUFFIX,m776.co,REJECT
+DOMAIN-SUFFIX,xiongmao12.com,REJECT
+DOMAIN-SUFFIX,rgn78y.cc,REJECT
+DOMAIN-SUFFIX,uj63t.com,REJECT
+DOMAIN-SUFFIX,7tyc3.com,REJECT
+DOMAIN-SUFFIX,yhwakgq3.com,REJECT
+# 纯广告创意 CDN（抽验正文帖 0 使用；go2yd/alicdn/mifile/z4a 为共享图床不拦，只删 DOM）
+DOMAIN,cdn.khfed.com,REJECT
+DOMAIN-SUFFIX,lhggtc.com,REJECT
+DOMAIN,sm2kz.net,REJECT
+DOMAIN,img.maldwin27.xyz,REJECT
+DOMAIN,j4xok.vip,REJECT
+DOMAIN,tc911.vip,REJECT
+DOMAIN,8855ggttgg.vip,REJECT
+DOMAIN,hwus1.hulichuang.mobi,REJECT
+DOMAIN,bjm.1vkx.cn,REJECT
+DOMAIN,m1.cffpic.com,REJECT
+# 统计
+DOMAIN-SUFFIX,cnzz.com,REJECT
+# 裸 IP 落地（app-abk 跳转器与下载页）
+IP-CIDR,192.238.142.212/32,REJECT,no-resolve
+IP-CIDR,146.103.87.104/32,REJECT,no-resolve
+
+[Script]
+# 页面重写：删 gg_ 横幅槽(整 mod)/APP 推广块/推广图组/底部悬浮/导航 APP 按钮/页脚友链 + CSS 兜底 + no-cache
+wz888-rewrite = type=http-response, pattern=^https?:\/\/[^\/]*wz888\.net\/(?!template), requires-body=1, script-path=https://raw.githubusercontent.com/mxd8/Surge/main/modules/wz888-adblock/js/wz888-rewrite.js?v=1000, timeout=10
+# common.js 重写：清空站方广告引擎配置数组（topGG/btmGG/couplet/rollingad 等），源头断种
+wz888-common = type=http-response, pattern=^https?:\/\/[^\/]*wz888\.net\/template\/tpl001\/js\/common\.js, requires-body=1, script-path=https://raw.githubusercontent.com/mxd8/Surge/main/modules/wz888-adblock/js/wz888-common.js?v=1000, timeout=10
+
+[MITM]
+# 模块 [MITM] hostname 覆盖其他模块的列表：保留 avjoy/xvideos/sex8 去广告模块与内置 router-com 模块所需域名
+hostname = avjoy.me, *.avjoy.me, router.com, www.router.com, xvideos.com, *.xvideos.com, sex8.cc, *.sex8.cc, wz888.net, *.wz888.net
