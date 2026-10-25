@@ -54,6 +54,6 @@ DOMAIN-SUFFIX,google-analytics.com,REJECT
 avjoy-rewrite = type=http-response, pattern=^https?:\/\/(?:www\.)?avjoy\.me\/, requires-body=1, script-path=https://raw.githubusercontent.com/mxd8/Surge/main/scripts/avjoy-rewrite.js, timeout=10
 
 [MITM]
-# 仅 MITM avjoy 站点本身；显式排除 z.ai（AI 服务流量绝不解密）。
+# 仅 MITM avjoy 站点本身；z.ai 的排除由主 profile 的 hostname 负责。
 # 注意：模块 [MITM] hostname 会覆盖其他模块的列表，保留内置 router-com 模块所需域名。
-hostname = avjoy.me, *.avjoy.me, router.com, www.router.com, -*.z.ai, -z.ai
+hostname = avjoy.me, *.avjoy.me, router.com, www.router.com
