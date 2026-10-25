@@ -1,0 +1,50 @@
+#!name=AVJoy 去广告
+#!desc=拦截 avjoy.me 视频页广告：贴片广告（VAST 标签/广告视频文件）、页面横幅与侧栏广告（ExoClick / JuicyAds / Tsyndicate）、smartpop 直播推广小窗、弹窗广告源及广告追踪像素。纯域名级规则，无需 MITM，Mac 与 iOS 通用。不拦截视频正片 CDN（media-cdn*.avjoy.me / sabtpledge.com），不影响播放与下载。
+#!version=1.0.0
+#!author=mxd8
+#!date=2026-10-25
+
+# 域名来源：surge-cli Replica 抓包 avjoy.me 首页/视频页/播放行为 + VAST 标签响应分析（2026-10-25）
+# 拦截策略：贴片 VAST 标签被拒后播放器 5 秒超时自动跳过（adCancelTimeout=5000），正片直接播放
+
+[Rule]
+# —— 贴片广告（VAST 链路）——
+# go.kbnmnl.com：smartpop VAST 广告标签 + 曝光(abc.gif) + 点击跳转（Stripchat 推广）
+DOMAIN-SUFFIX,kbnmnl.com,REJECT
+# video.sacdnssedge.com：贴片广告视频文件（VAST MediaFile）
+DOMAIN-SUFFIX,sacdnssedge.com,REJECT
+
+# —— 页面横幅 / 侧栏广告 ——
+# ExoClick：a.magsrv.com/ad-provider.js + s.magsrv.com 素材服务
+DOMAIN-SUFFIX,magsrv.com,REJECT
+DOMAIN-SUFFIX,exoclick.com,REJECT
+# JuicyAds：poweredby.jads.co/jads.js
+DOMAIN-SUFFIX,jads.co,REJECT
+DOMAIN-SUFFIX,juicyads.rocks,REJECT
+# Tsyndicate：cdn.tsyndicate.com SDK + pxl-us 像素
+DOMAIN-SUFFIX,tsyndicate.com,REJECT
+
+# —— smartpop 直播推广 / 弹窗（Adsterra 系直链域）——
+# go.mayzaent.com / go.marzaent.com：300x100 横幅 iframe
+DOMAIN-SUFFIX,mayzaent.com,REJECT
+DOMAIN-SUFFIX,marzaent.com,REJECT
+# go.greentrafsa.com / creative.greentrafsa.com：LIVE 主播推广小窗 iframe
+DOMAIN-SUFFIX,greentrafsa.com,REJECT
+# creative.mavrtracktor.com / video.mavrtracktor.com：横幅创意与视频素材
+DOMAIN-SUFFIX,mavrtracktor.com,REJECT
+
+# —— 广告 JS SDK / 创意素材 / 追踪 ——
+DOMAIN-SUFFIX,fozekikiminu.com,REJECT
+DOMAIN-SUFFIX,juneworewyjyna.com,REJECT
+DOMAIN-SUFFIX,uuidksinc.net,REJECT
+DOMAIN-SUFFIX,pxltag.com,REJECT
+DOMAIN-SUFFIX,rtbsuperhub.com,REJECT
+DOMAIN-SUFFIX,fh-wgt.com,REJECT
+DOMAIN-SUFFIX,xxxjmp.com,REJECT
+DOMAIN-SUFFIX,justservingfiles.net,REJECT
+DOMAIN-SUFFIX,bkcdn.net,REJECT
+DOMAIN,sc7.com,REJECT
+
+# —— 统计（广告投放常用载体，可选）——
+DOMAIN-SUFFIX,googletagmanager.com,REJECT
+DOMAIN-SUFFIX,google-analytics.com,REJECT
