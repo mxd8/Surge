@@ -19,9 +19,6 @@ if (body.indexOf('surge-sex8-adblock') !== -1) {
   $done({});
 }
 
-// 源头摘除同源广告生成器（静态 HTML 里的 script 标签，解析前删掉即断种）
-body = body.replace(STRIP_SCRIPTS, '');
-
 // 广告容器选择器（CSS 隐藏与 DOM 删除共用）：
 //   modal_index/modal_radio 两套广告弹窗（内含 ad_first 弹窗外链、ad_second APP/VIP
 //   推广浮窗、xb_ad_source_* 广告卡片）、楼层广告、固定底部横幅、导航 radiobar 广告位、
@@ -47,6 +44,9 @@ const AD_SELECTOR =
 //   recommends.js——广告 feed（pc-web.mnoas309.com）驱动的推广位生成器
 //   保留 categories.js（637KB 分类数据，左侧 location_list 快捷条依赖）与 redirect.js（功能不明，保守不动）
 const STRIP_SCRIPTS = /<script[^>]*src="[^"]*(?:peerclick|recommends)\.js[^"]*"[^>]*>\s*<\/script>/gi;
+
+// 源头摘除同源广告生成器（静态 HTML 里的 script 标签，解析前删掉即断种）
+body = body.replace(STRIP_SCRIPTS, '');
 
 const css = '<style id="surge-sex8-adblock-css">' +
   AD_SELECTOR + '{display:none !important;}' +
