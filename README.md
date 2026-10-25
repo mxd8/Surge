@@ -24,6 +24,7 @@ raw 地址格式：`https://raw.githubusercontent.com/mxd8/Surge/main/<路径>`
 | 模块 | 安装地址 | 说明 |
 |---|---|---|
 | AVJoy 去广告 | `https://raw.githubusercontent.com/mxd8/Surge/main/modules/avjoy-adblock/avjoy-adblock.sgmodule` | 拦截 avjoy.me 贴片/横幅/弹窗广告与追踪；域名 REJECT + JS 页面重写（清广告位、关 VAST 插件），需 MITM，Mac 与 iOS 通用 |
+| XVideos 去广告 | `https://raw.githubusercontent.com/mxd8/Surge/main/modules/xvideos-adblock/xvideos-adblock.sgmodule` | 拦截 xvideos.com 广告（ExoClick 服务域、站内赞助外链）；域名 REJECT + JS 页面重写（清广告位注入配置、删底部横幅与直播挂件区块），不拦正片 CDN 与直播站主域，需 MITM，Mac 与 iOS 通用 |
 
 模块配套 JS 一律放在各自文件夹的 `js/` 下，模块内通过 raw 地址引用，例如：
 

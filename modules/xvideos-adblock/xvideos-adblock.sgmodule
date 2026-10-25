@@ -1,0 +1,31 @@
+#!name=XVideos 去广告
+#!desc=拦截 XVideos 广告：ExoClick 服务域（pemsrv 实抓，magsrv/exoclick 兜底轮换）+ 站内赞助外链（Live Cams/Dating/Games 菜单跳转器）；重写页面清空广告位注入配置（底部横幅、原生网格广告）并删除直播挂件区块。不拦正片 CDN（*.xvideos-cdn.com）与直播站主域（chaturbate.com 等，仅删页面挂件 DOM）。Mac 与 iOS 通用，需 MITM。
+#!version=1.0.0
+#!author=mxd8
+#!date=2026-10-25
+
+# 域名来源：surge-cli Replica 抓包（首页/视频页/点击播放）+ 首页静态 HTML 分析（2026-10-25）
+# 播放实测：temp-rule 拦 pemsrv 后正片 HLS（hls-gcore.xvideos-cdn.com）流量正常，无贴片残留
+# 广告形态：ExoClick 承接全部广告位（s./a.pemsrv.com 服务+曝光；footer 横幅 #ad-footer；
+#           原生广告按 xv.conf.ads.banners 注入 .mozaique 网格）；直播挂件经 chaturbate 联盟
+#           iframe 直接加载（lcp_presence 轮询），网络层不拦其主域，由页面重写删区块
+
+[Rule]
+# —— 广告服务域（ExoClick 家族）——
+# s.pemsrv.com / a.pemsrv.com：XVideos 实抓的广告服务与曝光域
+DOMAIN-SUFFIX,pemsrv.com,REJECT
+# magsrv.com / exoclick.com：ExoClick 主域，覆盖 pemsrv 轮换（avjoy 模块已含，此处保模块自洽）
+DOMAIN-SUFFIX,magsrv.com,REJECT
+DOMAIN-SUFFIX,exoclick.com,REJECT
+
+# —— 站内赞助外链 ——
+# s.zline0.com：头部 Live Cams / Dating / AI Girlfriend / Games 菜单的跳转器（v1/d.php?z=...）
+DOMAIN-SUFFIX,zline0.com,REJECT
+
+[Script]
+# 页面重写：清空 ads.banners 注入配置、删除底部横幅与直播挂件区块（手机版/桌面版模板通用）
+xvideos-rewrite = type=http-response, pattern=^https?:\/\/(?:www\.)?xvideos\.com\/, requires-body=1, script-path=https://raw.githubusercontent.com/mxd8/Surge/main/modules/xvideos-adblock/js/xvideos-rewrite.js, timeout=10
+
+[MITM]
+# 模块 [MITM] hostname 覆盖其他模块的列表：保留 avjoy 去广告模块与内置 router-com 模块所需域名
+hostname = avjoy.me, *.avjoy.me, router.com, www.router.com, xvideos.com, *.xvideos.com
