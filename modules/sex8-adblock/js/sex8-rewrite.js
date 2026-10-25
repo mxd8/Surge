@@ -32,7 +32,9 @@ const AD_SELECTOR =
   'a#mn_plink_radiobar,ins.adsbygoogle,.adsbygoogle,' +
   '.V-video-float,tr.ad,.b_sxp,#v_e6_action,' +
   '.pct iframe[src*="plugin-e6-rebate"],' +
-  '#member-order-notice-modal,#member-order-notice-loading';
+  '#member-order-notice-modal,#member-order-notice-loading,' +
+  // v1.0.2：全站推广链接块（class 带混淆随机串 fnwehjnc12 会轮换，用结构与内容类删）
+  'div.full:has(> .div-list),.div-list,[class*="fnwehjnc"]';
 
 const css = '<style id="surge-sex8-adblock-css">' +
   AD_SELECTOR + '{display:none !important;}' +
@@ -42,11 +44,21 @@ const js = '<script id="surge-sex8-adblock-js">(function(){' +
   'var SEL=' + JSON.stringify(AD_SELECTOR) + ';' +
   'var pt=0;' +
   'function purge(){try{var els=document.querySelectorAll(SEL);for(var i=0;i<els.length;i++){els[i].remove();}}catch(e){}}' +
-  'if(document.readyState!=="loading"){purge();}' +
-  'document.addEventListener("DOMContentLoaded",purge);' +
-  'window.addEventListener("load",purge);' +
+  // 导航栏推广项过滤：Discuz #nv 里的 li 用随机 id（mn_N9660 这类），按落地域过滤而非枚举 id。
+  // 随机 TLD 是广告落地页的批量轮换特征；站点自有外链（twitter/t.me/姊妹站 .com）不受影响
+  'function navPass(){try{var re=new RegExp("[.](xyz|fyi|space|life|online|top|icu|buzz|bar|co)(:|/|$)|bxkfw458|glksr3|rkaflet|szefdrh|heiliao|yuelao|duoduomxm|quibids|weiixedbi|heisiyujie","i");' +
+  'var as=document.querySelectorAll("#nv a[href]");' +
+  'for(var i=0;i<as.length;i++){var h=as[i].getAttribute("href")||"";' +
+  'var p=h.indexOf("//");if(p<0)continue;' +
+  'var host=h.slice(p+2).split("/")[0].split(":")[0];' +
+  'if(re.test(host)){var li=as[i].closest("li")||as[i];li.remove();}}' +
+  '}catch(e){}}' +
+  'function clean(){purge();navPass();}' +
+  'if(document.readyState!=="loading"){clean();}' +
+  'document.addEventListener("DOMContentLoaded",clean);' +
+  'window.addEventListener("load",clean);' +
   // api.php 广告脚本可能在 load 后回填，MutationObserver 兜底 15 秒
-  'try{var mo=new MutationObserver(function(){clearTimeout(pt);pt=setTimeout(purge,200);});' +
+  'try{var mo=new MutationObserver(function(){clearTimeout(pt);pt=setTimeout(clean,200);});' +
   'mo.observe(document.documentElement,{childList:true,subtree:true});' +
   'setTimeout(function(){mo.disconnect();},15000);}catch(e){}' +
   '})();</script>';
